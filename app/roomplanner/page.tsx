@@ -10,7 +10,7 @@ import { handleItemClick } from "./functions/genarateImage";
 import { resetCanvas } from "./functions/resetCanva"; // Import the function
 import { addTextbox } from "./functions/addTextbox";
 import toggleLabels from "./functions/toggleLabels"; // Import the function
-
+import {Button, ButtonGroup} from "@heroui/button";
 import {
   Accordion,
   AccordionContent,
@@ -189,71 +189,71 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
       {/* Header & Buttons */}
       <div className="header-container bg-blue-500">
         <div className="button-container flex flex-wrap gap-1 justify-center p-3 bg-blue-500">
-<button
+<Button color="primary" size="sm" 
   onClick={() => {
     resetCanvas(canvasInstance, setImageDetails, setRoomIdCounter, setAltTextCounters, setLoadedImageIds);
     initCanvas();
   }}
-  className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+  className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
 >
   New
-</button>
+</Button>
 
 
 
 
-          <button
+          <Button
             onClick={handleRoomGeneration}
-            className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+       className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
           >
             Generate Room
-          </button>
-     <button
+          </Button>
+     <Button
             onClick={() => toggleLabels(canvasInstance, labelsVisible, setLabelsVisible)}
-            className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+       className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
           >
             Show/Hide Label
-          </button>
+          </Button>
 
-       <button
+       <Button
   onClick={() => addTextbox(canvasInstance)} // Pass canvasInstance to the addTextbox function
-  className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+ className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
 >
   Add Text Area
-</button>
-<button
+</Button>
+<Button
   onClick={() => deleteElement(canvasInstance)} // Call deleteElement
-  className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+ className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
 >
   Delete
-</button>
+</Button>
 
 
-          <button
+          <Button
             onClick={() => handleZoom(canvasInstance, true)} // Zoom In
-            className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+            className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
           >
             Zoom In
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => handleZoom(canvasInstance, false)} // Zoom Out
-            className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+        className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
           >
             Zoom Out
-          </button>
+          </Button>
        
-         <button
+         <Button
             onClick={() => handleExport(canvasInstance)} // Export with watermark
-            className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+        className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
           >
             Export Planner
-          </button>
-       <button
+          </Button>
+       <Button
   onClick={() => exportData(canvasInstance, imageDetails)} // Pass the correct image details
-  className="h-12 bg-blue-600 text-white text-lg font-bold rounded px-4 py-2 hover:opacity-90"
+className="h-12 bg-blue-600 text-white text-lg font-bold rounded-xl px-4 py-2 hover:opacity-90 w-40 "
 >
   Export Data
-</button>
+</Button>
 
         </div>
       </div>
