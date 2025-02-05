@@ -31,7 +31,7 @@ export const handleItemClick = (
     return;
   }
   
-  console.log(loadedImageIds); // Debugging log for loadedImageIds
+
   const category = item.dataset.category;
   const picture = item.dataset.picture;
 
@@ -45,7 +45,7 @@ export const handleItemClick = (
   const height = (Number(item.dataset.height) * 2.8) / scaling;
 
   const imageURL = `/${encodeURIComponent(picture)}`;
-  console.log(imageURL);
+
   const altText = item.getAttribute("alt") || "";
   const imgElement = new window.Image();
   imgElement.src = imageURL;
@@ -84,24 +84,24 @@ export const handleItemClick = (
         fontSize: 22,
         fill: "#000000",
         width: 300,
-        editable: true,
+        editable: false,
         textAlign: "center",
-        selectable: true,
+        selectable: false,
         zIndex: "1000",
       });
 
       const widthLabel = new fabric.Textbox("", {
-        editable: true,
+        editable: false,
         fontSize: 10,
         fill: "#000000",
-        selectable: true,
+        selectable: false,
       });
 
       const heightLabel = new fabric.Textbox("", {
-        editable: true,
+        editable: false,
         fontSize: 10,
         fill: "#000000",
-        selectable: true,
+        selectable: false,
       });
 
       const updateLabels = () => {

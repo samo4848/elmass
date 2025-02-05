@@ -58,9 +58,9 @@ export const createRoom = (
     left: roomRect.left + roomRect.getScaledWidth() / 2,
     top: roomRect.top - 20,
     width: 100,
-    editable: true,
+    editable: false,
     textAlign: "center",
-    selectable: true,
+    selectable: false,
     id: `${roomIdString}`,
     zIndex: "1000",
   });
@@ -72,9 +72,9 @@ export const createRoom = (
     left: roomRect.left + roomRect.getScaledWidth() / 2,
     top: roomRect.top + roomRect.getScaledHeight() + 10,
     width: 100,
-    editable: true,
+    editable: false,
     textAlign: "center",
-    selectable: true,
+    selectable: false,
     id: `${roomIdString}-widthLabel`,
   });
 
@@ -84,9 +84,9 @@ export const createRoom = (
     left: roomRect.left - 30,
     top: roomRect.top + roomRect.getScaledHeight() / 2,
     width: 100,
-    editable: true,
+    editable: false,
     textAlign: "center",
-    selectable: true,
+    selectable: false,
     id: `${roomIdString}-heightLabel`,
   });
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect,useMemo } from "react";
+import React, { useState, useEffect,useMemo , useRef} from "react";
 import * as fabric from "fabric";
 import { displayDimensions } from "./functions/displayDimension"; // Adjust the import path based on your project structure
 import { handleZoom } from "./functions/zoom"; // Import zoom function
@@ -49,7 +49,7 @@ interface RoomRectWithLabels extends fabric.Rect {
 }
 
 const RoomPlanner: React.FC<RoomPlannerProps> = ({ slug, furniture }) => {
-
+const [isOpen, setIsOpen] = useState(false);
   const [canvasInstance, setCanvasInstance] = useState<fabric.Canvas | null>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
@@ -61,8 +61,25 @@ const [loadedImageIds, setLoadedImageIds] = useState(new Set<string>());
 
   const [labelsVisible, setLabelsVisible] = useState<boolean>(true);
    const isEmpty = !Array.isArray(furniture) || furniture.length === 0;
+  const popupRef = useRef<HTMLDivElement>(null);
 
+ useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
 
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
 const groupedFurniture = useMemo(() => {
 
@@ -233,18 +250,39 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
             Zoom Out
           </button>
        
-         <button
-            onClick={() => handleExport(canvasInstance)} // Export with watermark
-              className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+      <div className="relative">
+      {/* Main Export Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+      >
+        Export
+      </button>
+
+      {/* Popup Modal */}
+      {isOpen && (
+        <div ref={popupRef} className="absolute top-14 left-0 bg-white border shadow-lg rounded-lg p-2 w-40 z-50">
+          <button
+            onClick={() => {
+              handleExport(canvasInstance);
+              setIsOpen(false);
+            }}
+            className="block w-full text-center px-2 py-2 text-black hover:bg-gray-200 rounded-md border-black"
           >
-            Export Planner
+            Export to Image
           </button>
-       <button
-  onClick={() => exportData(canvasInstance, imageDetails)} // Pass the correct image details
-    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
->
-  Export Data
-</button>
+          <button
+            onClick={() => {
+              exportData(canvasInstance, imageDetails);
+              setIsOpen(false);
+            }}
+            className="block w-full text-center px-4 py-2 text-black hover:bg-gray-200 rounded-md"
+          >
+            Export to PDF
+          </button>
+        </div>
+      )}
+    </div>
      <button
             onClick={() => toggleLabels(canvasInstance, labelsVisible, setLabelsVisible)}
                className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
