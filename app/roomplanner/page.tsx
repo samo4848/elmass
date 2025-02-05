@@ -10,7 +10,7 @@ import { handleItemClick } from "./functions/genarateImage";
 import { resetCanvas } from "./functions/resetCanva"; // Import the function
 import { addTextbox } from "./functions/addTextbox";
 import toggleLabels from "./functions/toggleLabels"; // Import the function
-import {Button, ButtonGroup} from "@heroui/button";
+
 import {
   Accordion,
   AccordionContent,
@@ -189,77 +189,74 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
       {/* Header & Buttons */}
       <div className="header-container bg-blue-500">
         <div className="button-container flex flex-wrap gap-1 justify-center p-3 bg-blue-500">
-<Button color="primary" size="sm" 
+<button
   onClick={() => {
     resetCanvas(canvasInstance, setImageDetails, setRoomIdCounter, setAltTextCounters, setLoadedImageIds);
     initCanvas();
   }}
-  className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+  className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
 >
   New
-</Button>
+</button>
 
 
 
 
-          <Button
+          <button
             onClick={handleRoomGeneration}
-       className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
-          >
-            Generate Room
-          </Button>
-     <Button
-            onClick={() => toggleLabels(canvasInstance, labelsVisible, setLabelsVisible)}
-        className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
-          >
-            Show/Hide Label
-          </Button>
-
-       <Button
+           className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+>
+            Add Room
+          </button>
+                 <button
   onClick={() => addTextbox(canvasInstance)} // Pass canvasInstance to the addTextbox function
-  className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
 >
-  Add Text Area
-</Button>
-<Button
+  Add Text
+</button>
+<button
   onClick={() => deleteElement(canvasInstance)} // Call deleteElement
-  className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
->
+    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36">
   Delete
-</Button>
+</button>
 
-
-          <Button
+          <button
             onClick={() => handleZoom(canvasInstance, true)} // Zoom In
-            className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
           >
             Zoom In
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => handleZoom(canvasInstance, false)} // Zoom Out
-        className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+               className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
           >
             Zoom Out
-          </Button>
+          </button>
        
-         <Button
+         <button
             onClick={() => handleExport(canvasInstance)} // Export with watermark
-        className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+              className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
           >
             Export Planner
-          </Button>
-       <Button
+          </button>
+       <button
   onClick={() => exportData(canvasInstance, imageDetails)} // Pass the correct image details
- className="h-12 bg-blue-600 text-white text-lg rounded-xl px-4 py-2 hover:opacity-90 w-40 "
+    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
 >
   Export Data
-</Button>
+</button>
+     <button
+            onClick={() => toggleLabels(canvasInstance, labelsVisible, setLabelsVisible)}
+               className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+          >
+            On/Off Label
+          </button>
 
         </div>
       </div>
 
      <div className="flex flex-col lg:flex-row fixed w-full">
-  <div className="w-3/4 bg-white p-2 "> {/* Adjusted width */}
+  <div className="w-3/4 bg-white p-2"> {/* Adjusted width */}
     <Accordion type="single" collapsible>
       {Object.entries(groupedFurniture).map(([category, items]) => (
         <AccordionItem key={category} value={category}>
@@ -275,11 +272,11 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
                   <img
                     src={item.picture}
                     alt={item.name}
-                    className="cursor-pointer w-20 h-20 justify-center text-center mx-auto"
+                    className="cursor-pointer w-20 h-20 mx-auto"
                     data-category={item.category}
                     data-picture={item.picture}
-                    // data-width={item.width}
-                    // data-height={item.height}
+                    data-width={item.width}
+                    data-height={item.height}
                     onClick={(e) =>
                       handleItemClick(
                         e.target as HTMLImageElement,
@@ -302,7 +299,7 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
 
   <div className="header-container">
     <div className="relative flex-grow w-3/4 xl:w-3/4 2xl:w-3/4">
-      <canvas id="canvas" className="border-black h-32 xl:h-screen lg:h-auto"></canvas>
+      <canvas id="canvas" className="border-black h-36 xl:h-screen lg:h-auto"></canvas>
 
       <div
         id="dimensionDisplay"
