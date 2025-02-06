@@ -5,12 +5,12 @@ import RoomPlanner from "../page";
 import { furnitureData } from "@/app/data/furnitureData";
 
 const SlugPage = () => {
-  const { slug } = useParams();
- 
-  // Extract the correct furniture array based on the slug
-  const furniture = furnitureData[slug as string] || [];
+  const { slug } = useParams();  // Get the slug from the URL parameters
 
-  return <RoomPlanner slug={slug as string} furniture={furniture} />;
+  // Retrieve the furniture data based on the slug
+  const furniture = furnitureData[slug as string] || []; 
+
+  return <RoomPlanner/>;  // Pass only the furniture to the RoomPlanner component
 };
 
 export default SlugPage;

@@ -1,5 +1,6 @@
+
 import * as fabric from "fabric";
-import { addGrid } from "./grid";
+import { addGrid } from "./addGrid";
 
 interface ImageDetail {
   imageId: string;

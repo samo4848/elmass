@@ -15,7 +15,7 @@ interface Room {
   heightLabel: fabric.Textbox;
 }
 
-let roomIdCounter = 1; // You may want to track this globally or pass it as a parameter
+const roomIdCounter = 1; // You may want to track this globally or pass it as a parameter
 const rooms: Room[] = []; // Array to store room data
 export const createRoom = (
   canvas: fabric.Canvas,

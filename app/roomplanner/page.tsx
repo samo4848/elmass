@@ -1,15 +1,17 @@
 "use client";
-import React, { useState, useEffect,useMemo , useRef} from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as fabric from "fabric";
 import { displayDimensions } from "./functions/displayDimension"; // Adjust the import path based on your project structure
 import { handleZoom } from "./functions/zoom"; // Import zoom function
-import { addGrid } from "./functions/grid"; // Import grid function
+import {addGrid} from "./functions/addGrid"; // Import default export
+
 import { createRoom } from "./functions/generateRoom"; // Import createRoom function
-import { handleExport, exportData } from "./functions/export"; 
+import { handleExport, exportData } from "./functions/export";
 import { handleItemClick } from "./functions/genarateImage";
 import { resetCanvas } from "./functions/resetCanva"; // Import the function
 import { addTextbox } from "./functions/addTextbox";
 import toggleLabels from "./functions/toggleLabels"; // Import the function
+import { furnitureData } from "@/app/data/furnitureData";
 
 import {
   Accordion,
@@ -24,10 +26,7 @@ interface FurnitureItem {
   height: number;
   category: string;
 }
-interface RoomPlannerProps {
-  slug: string;
-  furniture: FurnitureItem[];
-}
+
 type ImageDetail = {
   imageId: string;
   widthLabel: fabric.Textbox;
@@ -40,7 +39,7 @@ interface CustomFabricImage extends fabric.Image {
   heightLabel?: fabric.Textbox;
   imgIdLabel?: fabric.Textbox;
 }
-
+import { useParams } from "next/navigation";
 // Custom type for fabric.Rect with labels for rooms
 interface RoomRectWithLabels extends fabric.Rect {
   widthLabel: fabric.Textbox;
@@ -48,22 +47,30 @@ interface RoomRectWithLabels extends fabric.Rect {
   roomIdLabel: fabric.Textbox;
 }
 
-const RoomPlanner: React.FC<RoomPlannerProps> = ({ slug, furniture }) => {
-const [isOpen, setIsOpen] = useState(false);
-  const [canvasInstance, setCanvasInstance] = useState<fabric.Canvas | null>(null);
+const RoomPlanner: React.FC = () => {
+  const { slug } = useParams(); // Capture the dynamic slug from the URL
+const [furniture, setFurniture] = useState<FurnitureItem[]>([]);
+
+  const [isOpen, setIsOpen] = useState(false);
+const [canvasInstance, setCanvasInstance] = useState<fabric.Canvas | null>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   const [loading, setLoading] = useState(true);
- const [altTextCounters, setAltTextCounters] = useState({});
-const [imageDetails, setImageDetails] = useState<ImageDetail[]>([]);
-const [roomIdCounter, setRoomIdCounter] = useState(1);
-const [loadedImageIds, setLoadedImageIds] = useState(new Set<string>());
+  const [altTextCounters, setAltTextCounters] = useState({});
+  const [imageDetails, setImageDetails] = useState<ImageDetail[]>([]);
+  const [roomIdCounter, setRoomIdCounter] = useState(1);
+  const [loadedImageIds, setLoadedImageIds] = useState(new Set<string>());
 
   const [labelsVisible, setLabelsVisible] = useState<boolean>(true);
-   const isEmpty = !Array.isArray(furniture) || furniture.length === 0;
+  const isEmpty = !Array.isArray(furniture) || furniture.length === 0;
   const popupRef = useRef<HTMLDivElement>(null);
 
- useEffect(() => {
+useEffect(() => {
+  const fetchedFurniture = furnitureData[slug as string] || [];
+  setFurniture(fetchedFurniture);
+  console.log(slug, fetchedFurniture);
+}, [slug]);
+useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -112,24 +119,6 @@ const handleRoomGeneration = (): void => {
 };
 
 
-  // Function to initialize the canvas
-  const initCanvas = (): void => {
-    
-    if (canvasInstance) {
-      canvasInstance.dispose();
-    }
-
-    const newCanvas = new fabric.Canvas("canvas", {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      preserveObjectStacking: true,
-    });
-
-    // Use the imported addGrid function to add the grid to the canvas
-    addGrid(newCanvas);
-
-    setCanvasInstance(newCanvas);
-  };
 const deleteElement = (canvas: fabric.Canvas | null) => {
   if (!canvas) return;
 
@@ -162,16 +151,33 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
   }
 };
 
+const initCanvas = (): void => {
+    if (canvasInstance) {
+      canvasInstance.dispose(); // Dispose of the existing canvas if any
+    }
 
+    // Create a new canvas instance
+    const newCanvas = new fabric.Canvas("canvas", {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      preserveObjectStacking: true, // Maintain correct stacking order
+    });
 
-  useEffect(() => {
-    initCanvas(); // Initialize canvas on mount
+    // Add the grid to the new canvas
+    addGrid(newCanvas);
 
-    return () => {
-      canvasInstance?.dispose(); // Clean up on unmount
-    };
-  }, []);
+    // Update the state with the new canvas instance
+    setCanvasInstance(newCanvas);
+  };
 
+useEffect(() => {
+  initCanvas();
+  setTimeout(() => initCanvas(), 100); // Call 2nd time after 100ms
+
+  return () => {
+    canvasInstance?.dispose();
+  };
+}, []);
 
   useEffect(() => {
     if (canvasInstance) {
@@ -201,41 +207,44 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
       </div>
     );
   }
+
+
+
   return (
     <div className="header-container">
       {/* Header & Buttons */}
       <div className="header-container bg-blue-500">
         <div className="button-container flex flex-wrap gap-1 justify-center p-3 bg-blue-500">
-<button
-  onClick={() => {
-    resetCanvas(canvasInstance, setImageDetails, setRoomIdCounter, setAltTextCounters, setLoadedImageIds);
-    initCanvas();
-  }}
-  className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
->
-  New
-</button>
+          <button
+            onClick={() => {
+              resetCanvas(canvasInstance, setImageDetails, setRoomIdCounter, setAltTextCounters, setLoadedImageIds);
+              initCanvas();
+            }}
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+          >
+            New
+          </button>
 
 
 
 
           <button
             onClick={handleRoomGeneration}
-           className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
->
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+          >
             Add Room
           </button>
-                 <button
-  onClick={() => addTextbox(canvasInstance)} // Pass canvasInstance to the addTextbox function
-    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
->
-  Add Text
-</button>
-<button
-  onClick={() => deleteElement(canvasInstance)} // Call deleteElement
-    className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36">
-  Delete
-</button>
+          <button
+            onClick={() => addTextbox(canvasInstance)} // Pass canvasInstance to the addTextbox function
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+          >
+            Add Text
+          </button>
+          <button
+            onClick={() => deleteElement(canvasInstance)} // Call deleteElement
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36">
+            Delete
+          </button>
 
           <button
             onClick={() => handleZoom(canvasInstance, true)} // Zoom In
@@ -245,47 +254,47 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
           </button>
           <button
             onClick={() => handleZoom(canvasInstance, false)} // Zoom Out
-               className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
           >
             Zoom Out
           </button>
-       
-      <div className="relative">
-      {/* Main Export Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
-      >
-        Export
-      </button>
 
-      {/* Popup Modal */}
-      {isOpen && (
-        <div ref={popupRef} className="absolute top-14 left-0 bg-white border shadow-lg rounded-lg p-2 w-40 z-50">
+          <div className="relative">
+            {/* Main Export Button */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+            >
+              Export
+            </button>
+
+            {/* Popup Modal */}
+            {isOpen && (
+              <div ref={popupRef} className="absolute top-14 left-0 bg-white border shadow-lg rounded-lg p-2 w-40 z-50">
+                <button
+                  onClick={() => {
+                    handleExport(canvasInstance);
+                    setIsOpen(false);
+                  }}
+                  className="block w-full text-center px-2 py-2 text-black hover:bg-gray-200 rounded-md border-black"
+                >
+                  Export to Image
+                </button>
+                <button
+                  onClick={() => {
+                    exportData(canvasInstance, imageDetails);
+                    setIsOpen(false);
+                  }}
+                  className="block w-full text-center px-4 py-2 text-black hover:bg-gray-200 rounded-md"
+                >
+                  Export to PDF
+                </button>
+              </div>
+            )}
+          </div>
           <button
-            onClick={() => {
-              handleExport(canvasInstance);
-              setIsOpen(false);
-            }}
-            className="block w-full text-center px-2 py-2 text-black hover:bg-gray-200 rounded-md border-black"
-          >
-            Export to Image
-          </button>
-          <button
-            onClick={() => {
-              exportData(canvasInstance, imageDetails);
-              setIsOpen(false);
-            }}
-            className="block w-full text-center px-4 py-2 text-black hover:bg-gray-200 rounded-md"
-          >
-            Export to PDF
-          </button>
-        </div>
-      )}
-    </div>
-     <button
             onClick={() => toggleLabels(canvasInstance, labelsVisible, setLabelsVisible)}
-               className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
+            className="h-12 bg-blue-600 text-white text-md rounded-lg px-4 py-2 hover:opacity-90 w-36"
           >
             On/Off Label
           </button>
@@ -293,62 +302,62 @@ const deleteElement = (canvas: fabric.Canvas | null) => {
         </div>
       </div>
 
-     <div className="flex flex-col lg:flex-row fixed w-full">
-  <div className="w-3/4 bg-white p-2"> {/* Adjusted width */}
-    <Accordion type="single" collapsible>
-      {Object.entries(groupedFurniture).map(([category, items]) => (
-        <AccordionItem key={category} value={category}>
-          <AccordionTrigger className="w-72">{category}</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-2 gap-4">
-              {items.map((item) => (
-                <div key={item.name} className="text-center">
-                  <h4>{item.name}</h4>
-                  <p>
-                    {item.width} x {item.height}
-                  </p>
-                  <img
-                    src={item.picture}
-                    alt={item.name}
-                    className="cursor-pointer w-20 h-20 mx-auto"
-                    data-category={item.category}
-                    data-picture={item.picture}
-                    data-width={item.width}
-                    data-height={item.height}
-                    onClick={(e) =>
-                      handleItemClick(
-                        e.target as HTMLImageElement,
-                        canvasInstance,
-                        setAltTextCounters,
-                        setImageDetails,
-                        setLoadedImageIds,
-                        loadedImageIds
-                      )
-                    }
-                  />
-                </div>
-              ))}
+      <div className="flex flex-col lg:flex-row fixed w-full">
+        <div className="w-3/4 bg-white p-2"> {/* Adjusted width */}
+          <Accordion type="single" collapsible>
+            {Object.entries(groupedFurniture).map(([category, items]) => (
+              <AccordionItem key={category} value={category}>
+                <AccordionTrigger className="w-72">{category}</AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {items.map((item) => (
+                      <div key={item.name} className="text-center">
+                        <h4>{item.name}</h4>
+                        <p>
+                          {item.width} x {item.height}
+                        </p>
+                        <img
+                          src={item.picture}
+                          alt={item.name}
+                          className="cursor-pointer w-20 h-20 mx-auto"
+                          data-category={item.category}
+                          data-picture={item.picture}
+                          data-width={item.width}
+                          data-height={item.height}
+                          onClick={(e) =>
+                            handleItemClick(
+                              e.target as HTMLImageElement,
+                              canvasInstance,
+                              setAltTextCounters,
+                              setImageDetails,
+                              setLoadedImageIds,
+                              loadedImageIds
+                            )
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <div className="header-container">
+          <div className="relative flex-grow w-3/4 xl:w-3/4 2xl:w-3/4">
+            <canvas id="canvas" className="border-black h-36 xl:h-screen lg:h-auto "></canvas>
+
+            <div
+              id="dimensionDisplay"
+              className="text-lg w-auto fixed top-10 bg-white text-black p-2 border-2 border-black rounded z-10 xl:top-20 mt-2"
+            >
+              <p>Height: {dimensions.height.toFixed(2)} m</p>
+              <p>Width: {dimensions.width.toFixed(2)} m</p>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
-  </div>
-
-  <div className="header-container">
-    <div className="relative flex-grow w-3/4 xl:w-3/4 2xl:w-3/4">
-      <canvas id="canvas" className="border-black h-36 xl:h-screen lg:h-auto"></canvas>
-
-      <div
-        id="dimensionDisplay"
-        className="text-lg w-auto fixed top-10 bg-white text-black p-2 border-2 border-black rounded z-10 xl:top-20 mt-2"
-      >
-        <p>Height: {dimensions.height.toFixed(2)} m</p>
-        <p>Width: {dimensions.width.toFixed(2)} m</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
     </div>
   );
