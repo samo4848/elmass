@@ -316,30 +316,25 @@ useEffect(() => {
                         <p>
                           {item.width} x {item.height}
                         </p>
-                  <img
+                     <img
   src={`https://roomplanner-nu.vercel.app${item.picture}`}
-  alt={item.name}
-  className="cursor-pointer w-20 h-20 mx-auto"
-  data-category={item.category}
-  data-picture={item.picture}
-  data-width={item.width}
-  data-height={item.height}
-  onError={(e) => {
-    console.error("Error loading image:", e);
-    (e.target as HTMLImageElement).src = "/fallback-image.jpg"; // Provide a default image
-  }}
-  onClick={(e) =>
-    handleItemClick(
-      e.target as HTMLImageElement,
-      canvasInstance,
-      setAltTextCounters,
-      setImageDetails,
-      setLoadedImageIds,
-      loadedImageIds
-    )
-  }
-/>
-
+                          alt={item.name}
+                          className="cursor-pointer w-20 h-20 mx-auto"
+                          data-category={item.category}
+                          data-picture={item.picture}
+                          data-width={item.width}
+                          data-height={item.height}
+                          onClick={(e) =>
+                            handleItemClick(
+                              e.target as HTMLImageElement,
+                              canvasInstance,
+                              setAltTextCounters,
+                              setImageDetails,
+                              setLoadedImageIds,
+                              loadedImageIds
+                            )
+                          }
+                        />
                       </div>
                     ))}
                   </div>

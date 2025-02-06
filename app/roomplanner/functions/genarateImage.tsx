@@ -34,7 +34,7 @@ export const handleItemClick = (
 
   const category = item.dataset.category;
   const picture = item.dataset.picture;
-console.log(category,picture)
+
   if (!category || !picture) {
     console.error("Missing category or picture data.");
     return;
