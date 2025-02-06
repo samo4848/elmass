@@ -6,8 +6,8 @@ export const addGrid = (
   gridColor: string = "black",
   gridOpacity: number = 0.3
 ): void => {
-  const canvasWidth = canvas.getWidth();
-  const canvasHeight = canvas.getHeight();
+    const canvasWidth = 10000;
+    const canvasHeight = 100000;
 
   // Clear previous grid lines
   const existingGridLines = canvas.getObjects("line");
