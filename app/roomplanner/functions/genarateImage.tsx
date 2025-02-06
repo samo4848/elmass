@@ -30,12 +30,11 @@ export const handleItemClick = (
     console.error("Canvas not initialized yet.");
     return;
   }
-  console.log("Image URL:", `https://roomplanner-nu.vercel.app/${item.picture}`);
-
+  
 
   const category = item.dataset.category;
   const picture = item.dataset.picture;
-
+console.log(category,picture)
   if (!category || !picture) {
     console.error("Missing category or picture data.");
     return;

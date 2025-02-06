@@ -316,7 +316,7 @@ useEffect(() => {
                         <p>
                           {item.width} x {item.height}
                         </p>
-      <img
+                  <img
   src={`https://roomplanner-nu.vercel.app/${item.picture}`}
   alt={item.name}
   className="cursor-pointer w-20 h-20 mx-auto"
@@ -326,20 +326,9 @@ useEffect(() => {
   data-height={item.height}
   onError={(e) => {
     console.error("Error loading image:", e);
-    console.log("Failed Image URL:", `https://roomplanner-nu.vercel.app/${item.picture}`);
     (e.target as HTMLImageElement).src = "/fallback-image.jpg"; // Provide a default image
   }}
-  onLoad={() => {
-    console.log("Image loaded successfully:", `https://roomplanner-nu.vercel.app/${item.picture}`);
-  }}
-  onClick={(e) => {
-    console.log("Clicked image details:", {
-      url: e.currentTarget.src,
-      category: e.currentTarget.dataset.category,
-      width: e.currentTarget.dataset.width,
-      height: e.currentTarget.dataset.height,
-    });
-
+  onClick={(e) =>
     handleItemClick(
       e.target as HTMLImageElement,
       canvasInstance,
@@ -347,10 +336,10 @@ useEffect(() => {
       setImageDetails,
       setLoadedImageIds,
       loadedImageIds
-    );
-  }}
+      
+    )
+  }
 />
-
 
                       </div>
                     ))}
