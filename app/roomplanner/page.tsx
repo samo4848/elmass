@@ -317,6 +317,7 @@ useEffect(() => {
                           {item.width} x {item.height}
                         </p>
                      <img
+                        // src={`${item.picture}`}
   src={`https://roomplanner-nu.vercel.app${item.picture}`}
                           alt={item.name}
                           className="cursor-pointer w-20 h-20 mx-auto"
